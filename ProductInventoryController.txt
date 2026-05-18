@@ -1,0 +1,204 @@
+public class ProductInventoryController {
+
+    public Product_Inventory__c productObj {
+        get;
+        set;
+    }
+
+    public List<Product_Inventory__c> productList {
+        get;
+        set;
+    }
+
+    // Constructor
+    public ProductInventoryController() {
+
+        productObj = new Product_Inventory__c();
+
+        loadProducts();
+    }
+
+
+    // Load Products
+    public void loadProducts() {
+
+        productList = [
+            SELECT
+                Id,
+                Product_Name__c,
+                Serial_No__c,
+                Manufacture_Date__c,
+                Expiry_Date__c
+            FROM Product_Inventory__c
+        ];
+    }
+
+
+    // Add Product
+    public void addProduct() {
+
+        insert productObj;
+
+        ApexPages.addMessage(
+            new ApexPages.Message(
+                ApexPages.Severity.CONFIRM,
+                'Product Added Successfully'
+            )
+        );
+
+        productObj = new Product_Inventory__c();
+
+        loadProducts();
+    }
+
+
+    // Delete Product
+    public void deleteProduct() {
+
+        String productId =
+            ApexPages.currentPage().getParameters().get('pid');
+
+        Product_Inventory__c p = [
+            SELECT Id
+            FROM Product_Inventory__c
+            WHERE Id = :productId
+            LIMIT 1
+        ];
+
+        delete p;
+
+        ApexPages.addMessage(
+            new ApexPages.Message(
+                ApexPages.Severity.CONFIRM,
+                'Product Deleted Successfully'
+            )
+        );
+
+        loadProducts();
+    }
+}
+
+======================================================================================================================
+
+Step 4: Create Visualforce Page
+Go to:
+Setup → Visualforce Pages → New
+
+Page Name:
+ProductInventoryPage
+
+Paste this:
+
+<apex:page controller="ProductInventoryController">
+
+    <apex:form>
+
+        <apex:pageBlock title="Product Inventory Management System">
+
+            <apex:pageMessages />
+
+            <!-- Add Product Section -->
+
+            <apex:pageBlockSection title="Add Product" columns="1">
+
+                <apex:inputText
+                    value="{!productObj.Product_Name__c}"
+                    label="Product Name"
+                />
+
+                <apex:inputText
+                    value="{!productObj.Serial_No__c}"
+                    label="Serial No"
+                />
+
+                <apex:inputField
+                    value="{!productObj.Manufacture_Date__c}"
+                />
+
+                <apex:inputField
+                    value="{!productObj.Expiry_Date__c}"
+                />
+
+                <apex:commandButton
+                    value="Add Product"
+                    action="{!addProduct}"
+                    rerender="tableBlock,msg"
+                />
+
+            </apex:pageBlockSection>
+
+
+            <!-- Product Table -->
+
+            <apex:pageBlockSection title="Product Records" columns="1">
+
+                <apex:pageBlockTable
+                    value="{!productList}"
+                    var="p"
+                    id="tableBlock"
+                >
+
+                    <apex:column
+                        value="{!p.Product_Name__c}"
+                        headerValue="Product Name"
+                    />
+
+                    <apex:column
+                        value="{!p.Serial_No__c}"
+                        headerValue="Serial No"
+                    />
+
+                    <apex:column
+                        value="{!p.Manufacture_Date__c}"
+                        headerValue="Manufacture Date"
+                    />
+
+                    <apex:column
+                        value="{!p.Expiry_Date__c}"
+                        headerValue="Expiry Date"
+                    />
+
+                    <apex:column headerValue="Action">
+
+                        <apex:commandLink
+                            value="Delete"
+                            action="{!deleteProduct}"
+                            rerender="tableBlock,msg"
+                        >
+
+                            <apex:param
+                                name="pid"
+                                value="{!p.Id}"
+                            />
+
+                        </apex:commandLink>
+
+                    </apex:column>
+
+                </apex:pageBlockTable>
+
+            </apex:pageBlockSection>
+
+        </apex:pageBlock>
+
+    </apex:form>
+
+</apex:page>
+
+================================================================================================================
+
+Step 5: Run the Visualforce Page
+
+Click:
+Preview
+
+Now you’ll get a UI where you can:
+
+Add products
+View products
+Delete products
+
+All records are stored in:
+Product_Inventory__c
+
+inside Salesforce.

@@ -1,0 +1,121 @@
+public class StudentManagementSystem {
+
+    // Add Student
+    public static void addStudent(String name, Integer rollNo, Decimal marks) {
+
+        Student__c stu = new Student__c();
+
+        stu.Student_Name__c = name;
+        stu.Roll_Number__c = rollNo;
+        stu.Marks__c = marks;
+
+        insert stu;
+
+        System.debug('Student Added Successfully');
+    }
+
+
+    // View All Students
+    public static void viewStudents() {
+
+        List<Student__c> students = [
+            SELECT Id, Student_Name__c, Roll_Number__c, Marks__c
+            FROM Student__c
+        ];
+
+        if(students.isEmpty()) {
+
+            System.debug('No Student Records Found');
+        }
+        else {
+
+            for(Student__c s : students) {
+
+                System.debug(
+                    'Name: ' + s.Student_Name__c +
+                    ', Roll No: ' + s.Roll_Number__c +
+                    ', Marks: ' + s.Marks__c
+                );
+            }
+        }
+    }
+
+
+    // Search Student
+    public static void searchStudent(Integer rollNo) {
+
+        List<Student__c> students = [
+            SELECT Id, Student_Name__c, Marks__c
+            FROM Student__c
+            WHERE Roll_Number__c = :rollNo
+        ];
+
+        if(students.isEmpty()) {
+
+            System.debug('Student Not Found');
+        }
+        else {
+
+            for(Student__c s : students) {
+
+                System.debug(
+                    'Student Found -> ' +
+                    s.Student_Name__c +
+                    ', Marks: ' + s.Marks__c
+                );
+            }
+        }
+    }
+
+
+    // Update Marks
+    public static void updateMarks(Integer rollNo, Decimal newMarks) {
+
+        List<Student__c> students = [
+            SELECT Id, Marks__c
+            FROM Student__c
+            WHERE Roll_Number__c = :rollNo
+            LIMIT 1
+        ];
+
+        if(students.isEmpty()) {
+
+            System.debug('Student Not Found');
+        }
+        else {
+
+            Student__c stu = students[0];
+
+            stu.Marks__c = newMarks;
+
+            update stu;
+
+            System.debug('Marks Updated Successfully');
+        }
+    }
+
+
+    // Delete Student
+    public static void deleteStudent(Integer rollNo) {
+
+        List<Student__c> students = [
+            SELECT Id
+            FROM Student__c
+            WHERE Roll_Number__c = :rollNo
+            LIMIT 1
+        ];
+
+        if(students.isEmpty()) {
+
+            System.debug('Student Not Found');
+        }
+        else {
+
+            delete students[0];
+
+            System.debug('Student Deleted Successfully');
+        }
+    }
+}
+
+================================================================================================================

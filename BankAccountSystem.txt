@@ -1,0 +1,209 @@
+public class BankAccountSystem {
+
+    // Add Account
+    public static void addAccount(
+        Integer accountNo,
+        String customerName,
+        String email,
+        Decimal balance,
+        String accountType
+    ) {
+
+        Bank_Account__c acc = new Bank_Account__c();
+
+        acc.Account_Number__c = accountNo;
+        acc.Customer_Name__c = customerName;
+        acc.Email__c = email;
+        acc.Balance__c = balance;
+        acc.Account_Type__c = accountType;
+
+        insert acc;
+
+        System.debug('Bank Account Added Successfully');
+    }
+
+
+    // View Accounts
+    public static void viewAccounts() {
+
+        List<Bank_Account__c> accounts = [
+            SELECT
+                Account_Number__c,
+                Customer_Name__c,
+                Email__c,
+                Balance__c,
+                Account_Type__c
+            FROM Bank_Account__c
+        ];
+
+        if(accounts.isEmpty()) {
+
+            System.debug('No Bank Accounts Found');
+        }
+        else {
+
+            for(Bank_Account__c a : accounts) {
+
+                System.debug(
+                    'Account No: ' + a.Account_Number__c +
+                    ', Name: ' + a.Customer_Name__c +
+                    ', Email: ' + a.Email__c +
+                    ', Balance: ' + a.Balance__c +
+                    ', Type: ' + a.Account_Type__c
+                );
+            }
+        }
+    }
+
+
+    // Search Account
+    public static void searchAccount(Integer accountNo) {
+
+        List<Bank_Account__c> accounts = [
+            SELECT
+                Customer_Name__c,
+                Balance__c,
+                Account_Type__c
+            FROM Bank_Account__c
+            WHERE Account_Number__c = :accountNo
+        ];
+
+        if(accounts.isEmpty()) {
+
+            System.debug('Account Not Found');
+        }
+        else {
+
+            for(Bank_Account__c a : accounts) {
+
+                System.debug(
+                    'Customer: ' + a.Customer_Name__c +
+                    ', Balance: ' + a.Balance__c +
+                    ', Type: ' + a.Account_Type__c
+                );
+            }
+        }
+    }
+
+
+    // Deposit Money
+    public static void deposit(Integer accountNo, Decimal amount) {
+
+        List<Bank_Account__c> accounts = [
+            SELECT Id, Balance__c
+            FROM Bank_Account__c
+            WHERE Account_Number__c = :accountNo
+            LIMIT 1
+        ];
+
+        if(accounts.isEmpty()) {
+
+            System.debug('Account Not Found');
+        }
+        else {
+
+            Bank_Account__c acc = accounts[0];
+
+            acc.Balance__c += amount;
+
+            update acc;
+
+            System.debug('Amount Deposited Successfully');
+        }
+    }
+
+
+    // Withdraw Money
+    public static void withdraw(Integer accountNo, Decimal amount) {
+
+        List<Bank_Account__c> accounts = [
+            SELECT Id, Balance__c
+            FROM Bank_Account__c
+            WHERE Account_Number__c = :accountNo
+            LIMIT 1
+        ];
+
+        if(accounts.isEmpty()) {
+
+            System.debug('Account Not Found');
+        }
+        else {
+
+            Bank_Account__c acc = accounts[0];
+
+            if(acc.Balance__c >= amount) {
+
+                acc.Balance__c -= amount;
+
+                update acc;
+
+                System.debug('Withdrawal Successful');
+            }
+            else {
+
+                System.debug('Insufficient Balance');
+            }
+        }
+    }
+
+
+    // Delete Account
+    public static void deleteAccount(Integer accountNo) {
+
+        List<Bank_Account__c> accounts = [
+            SELECT Id
+            FROM Bank_Account__c
+            WHERE Account_Number__c = :accountNo
+            LIMIT 1
+        ];
+
+        if(accounts.isEmpty()) {
+
+            System.debug('Account Not Found');
+        }
+        else {
+
+            delete accounts[0];
+
+            System.debug('Account Deleted Successfully');
+        }
+    }
+}
+================================================================================================================
+
+Step 4: Execute Methods
+
+Open:
+
+Debug → Open Execute Anonymous Window
+
+Add Account
+BankAccountSystem.addAccount(
+    1001,
+    'Ishaan',
+    'ishaan@gmail.com',
+    5000.0,
+    'Savings'
+);
+
+View Accounts
+BankAccountSystem.viewAccounts();
+
+Search Account
+BankAccountSystem.searchAccount(1001);
+
+Deposit
+BankAccountSystem.deposit(1001, 2000.0);
+
+Withdraw
+BankAccountSystem.withdraw(1001, 1000.0);
+
+Delete Account
+BankAccountSystem.deleteAccount(1001);
+
+View Output
+Go to:
+Logs → Latest Log → Debug Only
+
+You’ll see messages like:
+Withdrawal Successful

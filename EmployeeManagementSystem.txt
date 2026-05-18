@@ -1,0 +1,169 @@
+public class EmployeeManagementSystem {
+
+    // Add Employee
+    public static void addEmployee(
+        Integer empId,
+        String empName,
+        String email,
+        Date birthDate,
+        String department
+    ) {
+
+        Employee__c emp = new Employee__c();
+
+        emp.Emp_ID__c = empId;
+        emp.Emp_Name__c = empName;
+        emp.Email__c = email;
+        emp.Birth_Date__c = birthDate;
+        emp.Department__c = department;
+
+        insert emp;
+
+        System.debug('Employee Added Successfully');
+    }
+
+
+    // View Employees
+    public static void viewEmployees() {
+
+        List<Employee__c> employees = [
+            SELECT
+                Emp_ID__c,
+                Emp_Name__c,
+                Email__c,
+                Birth_Date__c,
+                Department__c
+            FROM Employee__c
+        ];
+
+        if(employees.isEmpty()) {
+
+            System.debug('No Employee Records Found');
+        }
+        else {
+
+            for(Employee__c e : employees) {
+
+                System.debug(
+                    'ID: ' + e.Emp_ID__c +
+                    ', Name: ' + e.Emp_Name__c +
+                    ', Email: ' + e.Email__c +
+                    ', Birth Date: ' + e.Birth_Date__c +
+                    ', Department: ' + e.Department__c
+                );
+            }
+        }
+    }
+
+
+    // Search Employee
+    public static void searchEmployee(Integer empId) {
+
+        List<Employee__c> employees = [
+            SELECT
+                Emp_Name__c,
+                Email__c,
+                Department__c
+            FROM Employee__c
+            WHERE Emp_ID__c = :empId
+        ];
+
+        if(employees.isEmpty()) {
+
+            System.debug('Employee Not Found');
+        }
+        else {
+
+            for(Employee__c e : employees) {
+
+                System.debug(
+                    'Employee Found -> ' +
+                    e.Emp_Name__c +
+                    ', Email: ' + e.Email__c +
+                    ', Department: ' + e.Department__c
+                );
+            }
+        }
+    }
+
+
+    // Update Department
+    public static void updateDepartment(
+        Integer empId,
+        String newDepartment
+    ) {
+
+        List<Employee__c> employees = [
+            SELECT Id, Department__c
+            FROM Employee__c
+            WHERE Emp_ID__c = :empId
+            LIMIT 1
+        ];
+
+        if(employees.isEmpty()) {
+
+            System.debug('Employee Not Found');
+        }
+        else {
+
+            Employee__c emp = employees[0];
+
+            emp.Department__c = newDepartment;
+
+            update emp;
+
+            System.debug('Department Updated Successfully');
+        }
+    }
+
+
+    // Delete Employee
+    public static void deleteEmployee(Integer empId) {
+
+        List<Employee__c> employees = [
+            SELECT Id
+            FROM Employee__c
+            WHERE Emp_ID__c = :empId
+            LIMIT 1
+        ];
+
+        if(employees.isEmpty()) {
+
+            System.debug('Employee Not Found');
+        }
+        else {
+
+            delete employees[0];
+
+            System.debug('Employee Deleted Successfully');
+        }
+    }
+}
+
+--------------------------------------------------------------------------------------------------
+run commands in debug -> open annonymous executable window
+
+Add Employee
+EmployeeManagementSystem.addEmployee(
+    101,
+    'Ishaan',
+    'ishaan@gmail.com',
+    Date.newInstance(2004, 5, 15),
+    'IT'
+);
+
+View Employees
+EmployeeManagementSystem.viewEmployees();
+
+Search Employee
+EmployeeManagementSystem.searchEmployee(101);
+
+Update Department
+EmployeeManagementSystem.updateDepartment(101, 'HR');
+
+Delete Employee
+EmployeeManagementSystem.deleteEmployee(101);
+
+View Output
+After execution:
+Logs → Open Latest Log → Debug Only
