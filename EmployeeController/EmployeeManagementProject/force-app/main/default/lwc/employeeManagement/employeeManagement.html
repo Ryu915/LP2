@@ -1,0 +1,54 @@
+<template>
+
+    <lightning-card title="Employee Management System">
+
+        <div class="slds-p-around_medium">
+
+            <lightning-input
+                label="Employee Name"
+                onchange={handleName}>
+            </lightning-input>
+
+            <lightning-input
+                type="number"
+                label="Employee ID"
+                onchange={handleId}>
+            </lightning-input>
+
+            <lightning-input
+                type="number"
+                label="Salary"
+                onchange={handleSalary}>
+            </lightning-input>
+
+            <lightning-input
+                type="email"
+                label="Email"
+                onchange={handleEmail}>
+            </lightning-input>
+
+            <lightning-combobox
+                label="Department"
+                options={departmentOptions}
+                onchange={handleDepartment}>
+            </lightning-combobox>
+
+            <lightning-input
+                type="date"
+                label="Joining Date"
+                onchange={handleJoiningDate}>
+            </lightning-input>
+
+            <br/>
+
+            <lightning-button
+                label="Save Employee"
+                variant="brand"
+                onclick={saveEmployee}>
+            </lightning-button>
+
+        </div>
+
+    </lightning-card>
+
+</template>

@@ -330,3 +330,239 @@ employeeManagement
 onto the page.
 
 Save → Activate.
+
+===========================================================================================
+===========================================================================================
+
+Step 1: Install VS Code
+
+Download:
+Visual Studio Code
+
+Step 2: Install Node.js
+
+Download:
+Node.js
+Install the LTS version.
+
+Step 3: Install Salesforce CLI
+
+Download:
+Salesforce CLI
+
+Install it.
+
+Step 4: Install Salesforce Extensions in VS Code
+
+Open VS Code.
+Go to Extensions (left sidebar).
+Search:
+Salesforce Extension Pack
+
+Install it.
+
+Step 5: Create Salesforce Project Folder
+
+Now open terminal in VS Code:
+View → Terminal
+
+Run:
+sf project generate --name EmployeeManagementProject
+
+This creates a local folder like:
+
+/Users/yourname/EmployeeManagementProject
+
+Inside it:
+
+force-app
+sfdx-project.json
+manifest
+
+Now this becomes your Salesforce project.
+
+Step 6: Open Project in VS Code
+
+Click:
+
+File → Open Folder
+
+Select:
+
+EmployeeManagementProject
+
+Now you’ll see:
+
+force-app
+
+in the left sidebar.
+
+Step 7: Connect Salesforce Org
+
+In terminal:
+
+sf org login web --alias myorg
+
+Browser opens.
+
+Login to Salesforce.
+
+Authorize access.
+
+Now VS Code is connected to your org ☁️
+
+Step 8: Create LWC
+
+Now finally run:
+
+sf lightning generate component --type lwc --name employeeManagement
+
+This creates:
+
+force-app/main/default/lwc/employeeManagement
+
+Now Step 4 from earlier will make sense.
+
+Important
+
+For your college practical:
+
+Apex + Visualforce can be done fully online
+LWC requires local setup
+
+So your confusion happened because Salesforce suddenly switched from “browser-only world” to “developer ecosystem mode.”
+
+===========================================================================================
+ishaan915@Ishaans-MacBook-Pro EmployeeController % sf project generate --name EmployeeManagementProject
+zsh: command not found: sf
+=============================================================================================
+That means Salesforce CLI is either:
+
+not installed
+OR not added to PATH
+
+Your terminal literally cannot find the sf command.
+
+Step 1: Install Salesforce CLI
+
+Download and install:
+
+Salesforce CLI Download
+
+Choose:
+
+macOS Universal
+
+Install the .pkg file.
+
+Step 2: Restart Terminal
+
+After installation:
+
+completely close Terminal/VS Code
+reopen it
+
+Then test:
+
+sf --version
+
+If installed correctly, you’ll see something like:
+
+@salesforce/cli/2.x.x darwin-arm64 node-vxx
+Step 3: Create Project
+
+Now run:
+
+sf project generate --name EmployeeManagementProject
+If sf Still Doesn't Work
+
+Try older command:
+
+sfdx --version
+
+If this works, use:
+
+sfdx force:project:create --projectname EmployeeManagementProject
+
+Some Salesforce CLI versions still use sfdx instead of sf.
+
+Step 4: Open Project
+
+After project creation:
+
+File → Open Folder
+
+Open:
+
+EmployeeManagementProject
+
+Now you’ll see:
+
+force-app
+
+in VS Code.
+
+The Salesforce CLI is basically the bridge between your laptop and Salesforce’s cloud machinery. Right now the bridge simply hasn’t been installed yet.
+========================================================================================
+ishaan915@Ishaans-MacBook-Pro EmployeeController % sf lightning generate component --type lwc --name employeeManagement
+Error (1): Lightning bundles must have a parent folder named 'lwc'.
+===========================================================================================
+You are running the command from the wrong folder.
+
+Right now you’re probably inside:
+
+EmployeeController
+
+But LWC components must be created inside the Salesforce project structure:
+
+force-app/main/default/lwc
+Fix
+Step 1: Go to Your Project Folder
+
+First check where your Salesforce project exists.
+
+Run:
+
+pwd
+
+Then:
+
+ls
+
+You should see something like:
+
+force-app
+manifest
+sfdx-project.json
+
+If you do NOT see these, you are not inside the project folder.
+
+Step 2: Move into Project Folder
+
+Example:
+
+cd ~/EmployeeManagementProject
+
+Now check:
+
+ls
+
+You should see:
+
+force-app
+Step 3: Create Component Correctly
+
+Now run:
+
+sf lightning generate component --type lwc --name employeeManagement --output-dir force-app/main/default/lwc
+What Happens
+
+This creates:
+
+force-app/main/default/lwc/employeeManagement
+
+with:
+
+HTML file
+JS file
+XML file
